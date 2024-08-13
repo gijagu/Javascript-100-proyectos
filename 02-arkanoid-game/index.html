@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arkanoid en Javascript</title>
+  <style>
+    body {
+      margin: 30px;
+      padding: 0;
+      align-items: center;
+      height: 100vh;
+      background-color: #000;
+    }
+    canvas {
+      border: 4px solid #fff;
+      border-bottom: transparent;
+      background: #000;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas></canvas>
+  <script>
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d'); // 2d context
+    canvas.width = 448;
+    canvas.height = 400;
+
+    /* VARIABLES DEL JUEGO */
+    const  ballRadius = 3;
+    //posicion de la pelota
+    let x = canvas.width / 2;
+    let y = canvas.height - 30;
+    //velocidad de la pelota
+    let dx = -2;
+    let dy = -2;
+
+    /* VARIABLES DE LA PALETA */
+
+    let paddleHeight = 10;
+    let paddleWidth = 50;
+
+    let paddleX = (canvas.width - paddleWidth) / 2;
+    let paddleY = canvas.height - paddleHeight -10;
+
+    let rightPressed = false;
+    let leftPressed = false;
+
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawPaddle() {
+      ctx.fillStyle = 'f56';
+      ctx.fillRect(
+        paddleX, // la coordenada X
+        paddleY, // la coordenada Y
+        paddleWidth, // el ancho del dibujo
+        paddleHeight // el alto del dibujo
+      );
+      
+    }
+    function drawBricks() {
+    }
+
+    function collisionDetection() {
+    }
+    function ballMovement() {
+      //rebotar en las paredes laterales
+      if (
+        x + dx >canvas.width - ballRadius || // pared derecha
+        x + dx < ballRadius // pared izquierda
+      ) {
+        dx = -dx;
+      }
+      //rebotar en la pared superior
+      if (
+       y + dy < ballRadius // pared superior
+      ) {
+        dy = -dy;
+      }
+
+      //la pelota toca el suelo
+      if (y + dy > canvas.height - ballRadius) {
+        console.log('GAME OVER');
+        document.location.reload();
+      }
+
+      //mover la pelota
+      x += dx;
+      y += dy;
+    }
+    function paddleMovement() {
+    }
+
+    function cleanCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function initEvents(){
+      document.addEventListener('keydown', keyDownHandler);
+      document.addEventListener('keyup', keyUpHandler);
+
+      function keyDownHandler(e) {
+        const {key} = event
+        if (key === "Right" || key === "ArrowRight") {
+          rightPressed = true;
+        } else if (key === "Left" || key === "ArrowLeft") {
+          leftPressed = true;
+        }
+      }
+    }
+
+    function draw() {
+      cleanCanvas();
+      //dibujar los elementos del juego
+      drawBall();
+      drawPaddle();
+      drawBricks();
+      // drawScore();
+
+      //colisiones y movimientos
+      collisionDetection();
+      ballMovement();
+      paddleMovement();
+
+
+
+
+
+      
+
+
+     window.requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+
+</html>
